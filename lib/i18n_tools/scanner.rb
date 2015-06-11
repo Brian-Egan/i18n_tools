@@ -1,8 +1,8 @@
 module I18nTools
   class Scanner
     VIEW_REGEXPS = [/[^\w]t\(\"(.*?)\"(.*?)\)/, /[^\w]t\(\'(.*?)\'(.*?)\)/]
-    CODE_REGEXPS = [/I18n\.t\(\"(.*?)\"(.*?)\)/, /I18n\.t\(\'(.*?)\'(.*?)\)/]
-    
+    CODE_REGEXPS = [/I18n\.t\(\"(.*?)\"(.*?)\)/, /I18n\.t\(\'(.*?)\'(.*?)\)/, /"(.*?)\"\._/]
+
     def self.file_types
       @@file_types
     end
@@ -10,7 +10,7 @@ module I18nTools
       @@file_types = val
     end
     self.file_types = ['controllers', 'helpers', 'models']
-    
+
     def self.code_paths
       @@code_paths
     end
@@ -18,7 +18,7 @@ module I18nTools
       @@code_paths = val
     end
     self.code_paths = ["app/**/*.rb", "lib/**/*.rb"]
-    
+
     def self.view_paths
       @@view_paths
     end
@@ -32,7 +32,7 @@ module I18nTools
       scan_views(&block)
       scan_code(&block)
     end
-    
+
   private
     def code_paths
       [
@@ -40,7 +40,7 @@ module I18nTools
         self.class.code_paths
       ].flatten
     end
-  
+
     def scan_views(&block)
       Dir[*self.class.view_paths].uniq.each do |filename|
         next if ignores.any? { |r| filename =~ r }
@@ -59,7 +59,7 @@ module I18nTools
         end
       end
     end
-    
+
     def scan_code(&block)
       Dir[*code_paths].uniq.each do |filename|
         next if ignores.any? { |r| filename =~ r }
@@ -74,7 +74,7 @@ module I18nTools
         end
       end
     end
-    
+
     def ignores
       @ignores ||= File.read(".i18nignore").split("\n").reject { |e| e.strip.blank? || e =~ /^#/ }.collect { |i| Regexp.new(i) } rescue []
     end
