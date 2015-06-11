@@ -29,7 +29,7 @@ module I18nTools
 
   protected
     def scan(&block)
-      scan_views(&block)
+      # scan_views(&block)
       scan_code(&block)
     end
 
